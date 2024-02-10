@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import {signinDTO} from "./DTO/signinDTO";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
+import {deleteAccountDTO} from "./DTO/deleteAccountDTO";
 
 @Injectable()
 export class AuthService {
@@ -45,5 +46,17 @@ export class AuthService {
                 username : user.username
             }
         }
+    }
+
+    async deleteAccount(userId : number, deleteAccountDTO : deleteAccountDTO) {
+        console.log(userId)
+        const {password} = deleteAccountDTO;
+        const user = await this.prismaService.user.findUnique({where : {userId}});
+        if (!user) throw new NotFoundException("User not found");
+
+        const isMatched = await bcrypt.compare(password, user.password);
+        if (!isMatched) throw new UnauthorizedException("Password doesn't match.");
+        await this.prismaService.user.delete({where : {userId}});
+        return {data : 'User deleted succesfully.'};
     }
 }
