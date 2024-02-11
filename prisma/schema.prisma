@@ -17,4 +17,22 @@ model User {
   password String @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  cryptocurrencies UserCryptocurrency[]
+}
+
+model Cryptocurrency {
+  cryptocurrencyId Int @id @default(autoincrement())
+  fullName String@db.VarChar(255)
+  shortName String@db.VarChar(7)
+  users UserCryptocurrency[]
+}
+
+model UserCryptocurrency {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  cryptocurrencyId Int
+  user       User     @relation(fields: [userId], references: [userId])
+  cryptocurrency Cryptocurrency @relation(fields: [cryptocurrencyId], references: [cryptocurrencyId])
+
+  @@unique([userId, cryptocurrencyId])
 }
