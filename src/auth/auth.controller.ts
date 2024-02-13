@@ -5,6 +5,7 @@ import {AuthService} from "./auth.service";
 import {AuthGuard} from "@nestjs/passport";
 import {Request} from "express";
 import {deleteAccountDTO} from "./DTO/deleteAccountDTO";
+import {ApiTags} from "@nestjs/swagger";
 
 interface RequestUser extends Express.User {
     userId: number;
@@ -15,6 +16,7 @@ interface RequestUser extends Express.User {
     updatedAt: Date;
 }
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService : AuthService) {
